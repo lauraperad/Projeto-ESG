@@ -28,11 +28,15 @@ async def home(request: Request):
 @app.post("/analisar", response_class=HTMLResponse)
 async def analisar(request: Request, arquivo: UploadFile, pergunta: str = Form(...)):
     caminho = os.path.join(UPLOAD_DIR, arquivo.filename)
+
+
     with open(caminho, "wb") as f:
         shutil.copyfileobj(arquivo.file, f)
 
-    resultado = analyze_document_with_esg_guidelines(caminho, pergunta)
+   
+    resultado = analyze_document_with_esg_guidelines(arquivo.filename, pergunta)
 
+    
     return templates.TemplateResponse("resultado.html", {
         "request": request,
         "pergunta": resultado["pergunta"],
